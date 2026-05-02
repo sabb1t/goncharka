@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ЛИТА | Керамика</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media (pointer: fine) {
+            * { cursor: none; }
+            .custom-cursor {
+                width: 60px;
+                height: 60px;
+                background: rgba(196, 106, 58, 0.25);
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                filter: blur(18px);
+                transform: translate(-50%, -50%);
+                transition: transform 0.15s, width 0.2s, height 0.2s;
+                z-index: 9999;
+            }
+        }
+
+        body {
+            background: radial-gradient(circle at 30% 20%, #1a1a1a, #0a0a0a);
+            font-family: 'Inter', sans-serif;
+            color: #e6e6e6;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjgiIG51bU9jdGF2ZXM9IjMiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZikiIG9wYWNpdHk9IjAuMDYiLz48L3N2Zz4=');
+            background-repeat: repeat;
+            pointer-events: none;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #c46a3a;
+            width: 0%;
+            z-index: 10000;
+        }
+        .burger-menu {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1002;
+            cursor: pointer;
+            background: rgba(20,20,20,0.6);
+            backdrop-filter: blur(12px);
+            width: 56px;
+            height: 56px;
+            border-radius: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid rgba(196,106,58,0.4);
+        }
+        .burger-line {
+            width: 24px;
+            height: 2px;
+            background: #e6e6e6;
+            transition: 0.3s;
+        }
+        .burger-menu.open .burger-line:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .burger-menu.open .burger-line:nth-child(2) { transform: translateY(-9px) rotate(-45deg); }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 280px;
+            height: 100%;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1001;
+            transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 96px 32px;
+        }
+        .side-menu.open { right: 0; }
+        .side-menu a { color: #ddd; text-decoration: none; font-size: 1.4rem; display: block; margin-bottom: 28px; letter-spacing: -0.02em; }
+        .side-menu a:hover { color: #c46a3a; transform: translateX(8px); }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        .overlay.show { opacity: 1; visibility: visible; }
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 8%;
+            overflow: hidden;
+        }
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: -1;
+        }
+        h1 {
+            font-size: 10vw;
+            line-height: 0.85;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            text-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            text-align: left;
+        }
+        .hero-sub {
+            font-size: 1rem;
+            letter-spacing: 6px;
+            color: #c46a3a;
+            margin: 24px 0 16px;
+            text-align: left;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid #c46a3a;
+            padding: 12px 28px;
+            border-radius: 0px;
+            color: #c46a3a;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+        .btn:hover { background: #c46a3a; color: #0a0a0a; }
+        .section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        h2 { font-size: 4rem; font-weight: 600; margin-bottom: 48px; letter-spacing: -0.03em; line-height: 1.1; }
+        .gallery-container {
+            overflow: visible;
+        }
+        .slide {
+            width: 55%;
+            height: 420px;
+            margin: 30px 0;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateX(-60vw);
+            transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        }
+        .slide.right {
+            transform: translateX(60vw);
+            margin-left: auto;
+        }
+        .slide.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .slide:nth-child(2) { width: 45%; height: 320px; margin-top: -40px; margin-bottom: 60px; }
+        .slide:nth-child(3) { width: 65%; height: 480px; margin-left: -8%; }
+        .slide:nth-child(4) { width: 40%; height: 360px; margin-top: -80px; }
+
+        .quiz-step { display: none; margin: 40px 0; }
+        .quiz-step.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .progress { background: #2e2e2e; height: 3px; width: 100%; margin: 20px 0; }
+        .progress-fill { background: #c46a3a; width: 0%; height: 100%; transition: width 0.3s; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-top: 30px; }
+        .cal-day { background: rgba(30,30,30,0.7); padding: 16px 8px; text-align: center; cursor: pointer; border-bottom: 2px solid transparent; }
+        .cal-day:hover { border-bottom-color: #c46a3a; }
+        .float-card { background: #1c1c1c; padding: 32px; margin: 48px 0; width: 80%; box-shadow: -20px 20px 30px rgba(0,0,0,0.3); }
+        input, select { background: #2a2a2a; border: none; padding: 14px 20px; width: 100%; margin: 12px 0; color: #e6e6e6; border-left: 3px solid #c46a3a; }
+        footer { text-align: center; padding: 60px 20px; color: #6a6a6a; border-top: 1px solid #2a2a2a; }
+        @media (max-width: 760px) {
+            h1 { font-size: 14vw; }
+            h2 { font-size: 2.4rem; }
+            .slide, .slide:nth-child(2), .slide:nth-child(3), .slide:nth-child(4) { width: 90%; margin: 20px auto; height: auto; }
+            .slide.right { margin-left: auto; margin-right: auto; }
+        }
+    </style>
+</head>
+<body>
+<div class="custom-cursor" id="cursor"></div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="burger-menu" id="burgerBtn"><div class="burger-line"></div><div class="burger-line"></div></div>
+<div class="side-menu" id="sideMenu"><ul><li><a href="#hero">Главная</a></li><li><a href="#gallery">Галерея</a></li><li><a href="#quiz">Квиз</a></li><li><a href="#contact">Запись</a></li></ul></div>
+<div class="overlay" id="overlay"></div>
+
+<section class="hero" id="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+        <source src="ceramics_bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div>
+        <div class="hero-sub">LITA CERAMICS</div>
+        <h1>Глина<br>в руках</h1>
+        <button class="btn" id="scrollToGallery">погружение →</button>
+    </div>
+</section>
+
+<div class="section" id="gallery">
+    <h2>Материальность</h2>
+    <div class="gallery-container" id="galleryContainer"></div>
+</div>
+
+<div class="section" id="quiz"><h2>Найти форму</h2><div id="quizContainer"></div><div class="progress"><div class="progress-fill" id="quizFill"></div></div></div>
+<div class="section" id="calendar"><h2>Тишина и руки</h2><div id="calendarContainer" class="calendar-grid"></div></div>
+<div class="section" id="contact"><div class="float-card"><h2 style="margin:0 0 16px 0; font-size:2rem;">Оставить след</h2>
+<form id="leadForm"><input type="text" id="name" placeholder="имя"><input type="tel" id="phone" placeholder="телефон"><select id="mkSelect"><option>Гончарный круг</option><option>Лепка из глины</option></select><button type="submit" class="btn">отправить заявку</button><div id="formStatus"></div></form></div></div>
+<footer>ЛИТА — керамическая студия в Казани</footer>
+
+<script>
+    // КУРСОР
+    if ('ontouchstart' in window === false) {
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        const interactive = document.querySelectorAll('button, input, select, .burger-menu');
+        interactive.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '80px';
+                cursor.style.height = '80px';
+                cursor.style.background = 'rgba(196,106,58,0.35)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '60px';
+                cursor.style.height = '60px';
+                cursor.style.background = 'rgba(196,106,58,0.25)';
+            });
+        });
+    }
+
+    // ПРОГРЕСС-БАР
+    function updateProgress() {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        document.getElementById('progressBar').style.width = `${(winScroll / height) * 100}%`;
+    }
+    window.addEventListener('scroll', updateProgress);
+
+    // БУРГЕР
+    function toggleMenu() {
+        document.getElementById('burgerBtn').classList.toggle('open');
+        document.getElementById('sideMenu').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+    document.getElementById('burgerBtn').addEventListener('click', toggleMenu);
+    document.getElementById('overlay').addEventListener('click', toggleMenu);
+    document.querySelectorAll('.side-menu a').forEach(a => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+        toggleMenu();
+    }));
+
+    // ГАЛЕРЕЯ
+    const images = [
+        { url: "ceramics_1.jpg", side: "left" },
+        { url: "ceramics_2.jpg", side: "right" },
+        { url: "ceramics_3.jpg", side: "left" },
+        { url: "ceramics_4.jpg", side: "right" }
+    ];
+    const galleryContainer = document.getElementById('galleryContainer');
+    galleryContainer.innerHTML = '';
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -100px 0px" });
+
+    images.forEach(img => {
+        const div = document.createElement('div');
+        div.className = `slide ${img.side}`;
+        div.style.backgroundImage = `url('${img.url}')`;
+        galleryContainer.appendChild(div);
+        observer.observe(div);
+    });
+
+    // ГАРАНТИЯ: ПРОВЕРЯЕМ ВИДИМЫЕ ФОТО
+    function checkVisibleSlides() {
+        document.querySelectorAll('.slide').forEach(slide => {
+            const rect = slide.getBoundingClientRect();
+            if (rect.top < window.innerHeight + 100 && rect.bottom > 0) {
+                slide.classList.add('visible');
+            }
+        });
+    }
+    window.addEventListener('load', checkVisibleSlides);
+    window.addEventListener('scroll', () => { requestAnimationFrame(checkVisibleSlides); });
+    setTimeout(checkVisibleSlides, 500);
+
+    // КВИЗ
+    const questions = [ { q: "Ваш опыт?", opts: ["Никогда", "Пробовал"], scores: [0,1] }, { q: "Цель?", opts: ["Отдых", "Навык"], scores: [0,1] }, { q: "Формат?", opts: ["Один", "С компанией"], scores: [0,1] } ];
+    let step = 0, answers = []; const quizDiv = document.getElementById('quizContainer'); const quizFill = document.getElementById('quizFill');
+
+    function renderQuiz() {
+        if (step >= questions.length) {
+            const total = answers.reduce((a,b)=>a+b,0);
+            const rec = total <= 1 ? "Лепка из глины" : "Гончарный круг";
+            quizDiv.innerHTML = `<div class="quiz-step active"><h3>🎋 Рекомендуем: ${rec}</h3><button class="btn" id="resetQuiz">Пройти заново</button></div>`;
+            document.getElementById('resetQuiz')?.addEventListener('click', () => { step = 0; answers = []; quizFill.style.width = '0%'; renderQuiz(); });
+            return;
+        }
+        const q = questions[step];
+        quizDiv.innerHTML = `<div class="quiz-step active"><h3>${q.q}</h3>${q.opts.map((opt, i) => `<button class="btn quiz-opt" data-score="${q.scores[i]}">${opt}</button>`).join('')}</div>`;
+        document.querySelectorAll('.quiz-opt').forEach(btn => btn.addEventListener('click', (e) => {
+            answers.push(parseInt(e.target.dataset.score));
+            step++;
+            quizFill.style.width = `${(step / questions.length) * 100}%`;
+            renderQuiz();
+        }));
+    }
+    renderQuiz();
+
+    // КАЛЕНДАРЬ
+    const events = [{ date:"2025-05-12", title:"Гончарный круг" }, { date:"2025-05-14", title:"Лепка" }];
+    let calHtml = '';
+    for(let i = 1; i <= 31; i++) {
+        const date = `2025-05-${i.toString().padStart(2,'0')}`;
+        const ev = events.find(e => e.date === date);
+        calHtml += `<div class="cal-day" data-title="${ev?.title || ''}">${i}<br>${ev ? '🎨' : ''}</div>`;
+    }
+    document.getElementById('calendarContainer').innerHTML = calHtml;
+    document.querySelectorAll('.cal-day[data-title]').forEach(el => {
+        el.addEventListener('click', () => alert(`Мастер-класс: ${el.dataset.title}. Запись через форму.`));
+    });
+
+    // ФОРМА
+    document.getElementById('leadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const mk = document.getElementById('mkSelect').value;
+        if (!phone.match(/^\+?7\d{10}$/)) {
+            alert('Телефон +7XXXXXXXXXX');
+            return;
+        }
+        const statusDiv = document.getElementById('formStatus');
+        statusDiv.innerText = 'отправка...';
+        try {
+            await fetch('https://formspree.io/f/xqapjzqv', { method: 'POST', headers: { 'Accept': 'application/json' }, body: new URLSearchParams({ name, phone, mk }) });
+            statusDiv.innerText = '✅ оставлен след';
+        } catch(e) {
+            statusDiv.innerText = '❌ ошибка';
+        }
+    });
+
+    document.getElementById('scrollToGallery').addEventListener('click', () => {
+        document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>
